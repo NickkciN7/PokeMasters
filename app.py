@@ -100,10 +100,7 @@ def populatePokeInfo():
     for i in range(1, GENERATION1_COUNT + 1):
         pokename = get_name(i).capitalize()
         spriteurl = get_sprite(i)
-        bulbaurl = (
-            "https://the-pokemasters-v2.herokuapp.com/static/pokemon/"
-            + get_image_name(pokename, i)
-        )
+        bulbaurl = "../static/pokemon/" + get_image_name(pokename, i)
         entry = pokeinfo(
             id=i, name=pokename, bulbaimageurl=bulbaurl, pokeapiimageurl=spriteurl
         )
@@ -210,7 +207,10 @@ def signup():
             db.session.add(user)
             db.session.commit()
             db.session.refresh(user)
-            user_version_data = version(userid=user.id, version=user_version,)
+            user_version_data = version(
+                userid=user.id,
+                version=user_version,
+            )
             db.session.add(user_version_data)
             db.session.commit()
             flask.flash(f"{user_name} has been added")
@@ -470,7 +470,10 @@ def ranking():
 def leaderboard():
     user_list = profile.query.all()
     user_ranking = sorted(user_list, key=lambda x: x.lifetimepoints, reverse=True)
-    return render_template("ranking.html", user_ranking=user_ranking,)
+    return render_template(
+        "ranking.html",
+        user_ranking=user_ranking,
+    )
 
 
 @app.route("/user_profile/<user_id>", methods=["GET", "POST"])
@@ -494,7 +497,9 @@ def user_profile(user_id):
             }
             pokelinfo.append(cdict)
         return render_template(
-            "userProfile.html", user_info=user_info, pokelinfo=pokelinfo,
+            "userProfile.html",
+            user_info=user_info,
+            pokelinfo=pokelinfo,
         )
     return flask.redirect("/ranking")
 
@@ -534,7 +539,9 @@ def search():
                 }
                 pokelinfo.append(cdict)
             return render_template(
-                "userProfile.html", user_info=found_user, pokelinfo=pokelinfo,
+                "userProfile.html",
+                user_info=found_user,
+                pokelinfo=pokelinfo,
             )
         else:
             flask.flash("No user found")
@@ -603,7 +610,11 @@ def maketradeentry():
             return flask.jsonify("has offered")
         requestID = data["requestID"]
         offerID = data["offerID"]
-        newTrade = trade(userid=current_user.id, requestid=requestID, offerid=offerID,)
+        newTrade = trade(
+            userid=current_user.id,
+            requestid=requestID,
+            offerid=offerID,
+        )
         db.session.add(newTrade)
         db.session.commit()
     return flask.jsonify(1)
